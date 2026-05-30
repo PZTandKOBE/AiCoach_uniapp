@@ -1,22 +1,19 @@
 {
   "name": "fitness-client-mini",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "description": "AI 健身饮食智能教练 - C端小程序",
+  "main": "main.ts",
+  "type": "module",
   "dependencies": {
-    "pinia": "^3.0.4"
+    "pinia": "2.1.7"
   },
   "devDependencies": {
-    "@unocss/preset-icons": "^66.7.0",
-    "@unocss/preset-uno": "^66.7.0",
-    "unocss": "^66.7.0",
-    "unocss-preset-weapp": "^66.0.2"
+    "@dcloudio/types": "3.4.8",
+    "@dcloudio/vite-plugin-uni": "3.0.0-3090920231225001",
+    "vite": "4.5.3",
+    "unocss": "0.58.3",
+    "@unocss/preset-icons": "0.58.3",
+    "@unocss/preset-uno": "0.58.3",
+    "unocss-preset-weapp": "0.58.3"
   }
 }
