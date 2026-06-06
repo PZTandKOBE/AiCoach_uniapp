@@ -21,7 +21,22 @@
         "navigationBarBackgroundColor": "#000000",
         "navigationBarTextStyle": "white"
       }
-    }
+    },
+	{
+	  "path": "pages/chat/index",
+	  "style": {
+	    "navigationStyle": "custom"
+	  }
+	},
+	{
+	  "path": "pages/camera/index",
+	  "style": {
+	    "navigationBarTitleText": "AI 视觉测算",
+	    "navigationBarBackgroundColor": "#000000",
+	    "navigationBarTextStyle": "white"
+	  }
+	}
+	
   ],
   "globalStyle": {
     "navigationBarTextStyle": "white",

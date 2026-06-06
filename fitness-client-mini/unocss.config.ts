@@ -1,8 +1,11 @@
-import { defineConfig, presetIcons, presetUno } from 'unocss';
+import { defineConfig, presetIcons } from 'unocss';
+// 核心修复：引入小程序专属 preset，抹平 WXSS 特殊字符编译冲突
+import presetWeapp from 'unocss-preset-weapp';
 
 export default defineConfig({
   presets: [
-    presetUno(),
+    // 移除默认的 presetUno，使用全面兼容小程序的 presetWeapp 替代
+    presetWeapp(),
     presetIcons()
   ],
   shortcuts: {

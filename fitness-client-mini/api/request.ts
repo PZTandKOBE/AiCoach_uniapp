@@ -1,7 +1,8 @@
-// src/api/request.ts
+// api/request.ts
 
 // 定义后端接口基础路径 (请根据你 Spring Boot 实际的本地调试端口或线上域名进行修改)
-const BASE_URL = 'http://localhost:8080'; 
+// 注意：如果是真机调试，请换成你电脑的局域网 IP，例如 http://192.168.1.100:8080
+const BASE_URL = 'http://localhost:8081'; 
 
 // 定义与 Spring Boot 后端约定的统一返回结构
 export interface Result<T = any> {
@@ -12,10 +13,6 @@ export interface Result<T = any> {
 
 /**
  * 核心网络请求封装
- * @param url 接口路径 (例如: /api/v1/auth/login/wechat)
- * @param method 请求方法
- * @param data 请求参数
- * @param header 自定义请求头
  */
 export const request = <T = any>(
   url: string,
@@ -38,7 +35,7 @@ export const request = <T = any>(
       ...header
     };
 
-    // 如果存在 token，严格按照 JWT 规范注入 Authorization 头
+    // 如果存在 token，注入 Authorization 头
     if (token) {
       defaultHeader['Authorization'] = `Bearer ${token}`;
     }
@@ -51,20 +48,19 @@ export const request = <T = any>(
       success: (res: any) => {
         const statusCode = res.statusCode;
         
-        // 1. 处理 HTTP 层面错误：401 鉴权失败 (Token 过期或未携带)
+        // 1. 处理 HTTP 层面错误：401 鉴权失败
         if (statusCode === 401) {
           uni.showToast({
             title: '登录状态已失效，请重新登录',
             icon: 'none'
           });
           uni.removeStorageSync('token');
-          // 强制路由推回登录/首页进行静默授权
-          uni.reLaunch({ url: '/pages/index/index' }); 
+          uni.reLaunch({ url: '/pages/login/index' }); 
           reject(new Error('Unauthorized'));
           return;
         }
 
-        // 2. 处理其他非 200 系列的严重网络层异常
+        // 2. 处理其他非 200 系列的网络异常
         if (statusCode < 200 || statusCode >= 300) {
           uni.showToast({
             title: `服务器异常 [${statusCode}]`,
@@ -77,12 +73,12 @@ export const request = <T = any>(
         // 3. 解析 Spring Boot 业务层数据结果 Result<T>
         const result = res.data as Result<T>;
         
-        // 假设 code === 0 为业务成功标志 (需与后端 Result 结构严格对齐)
-        if (result.code === 0) {
+        // 核心修复：兼容 Spring Boot 的 200 成功状态码以及传统的 0 状态码
+        if (result.code === 0 || result.code === 200) {
           // 直接剥离外壳，把最核心的 data 抛给前端业务层
           resolve(result.data);
         } else {
-          // 业务校验失败 (例如参数错误、余额不足等)
+          // 业务校验失败
           uni.showToast({
             title: result.message || '系统繁忙，请稍后再试',
             icon: 'none'
@@ -101,7 +97,6 @@ export const request = <T = any>(
   });
 };
 
-// 导出语义化的快捷请求方法，方便页面调用
 export const http = {
   get: <T = any>(url: string, data?: any) => request<T>(url, 'GET', data),
   post: <T = any>(url: string, data?: any, header?: any) => request<T>(url, 'POST', data, header),
